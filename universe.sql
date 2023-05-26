@@ -44,12 +44,29 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
+-- Name: fifth_table; Type: TABLE; Schema: public; Owner: freecodecamp
+--
+
+CREATE TABLE public.fifth_table (
+    table_id integer NOT NULL,
+    name character varying
+);
+
+
+ALTER TABLE public.fifth_table OWNER TO freecodecamp;
+
+--
 -- Name: galaxy; Type: TABLE; Schema: public; Owner: freecodecamp
 --
 
 CREATE TABLE public.galaxy (
     name character varying,
-    galaxy_id integer NOT NULL
+    galaxy_id integer NOT NULL,
+    galaxy_raidus integer,
+    galaxy_mass_kg integer,
+    moon_numeric numeric(2,1),
+    galaxy_text text,
+    has_atmosphere boolean
 );
 
 
@@ -61,7 +78,10 @@ ALTER TABLE public.galaxy OWNER TO freecodecamp;
 
 CREATE TABLE public.moon (
     name character varying,
-    moon_id integer NOT NULL
+    moon_id integer NOT NULL,
+    moon_radius integer,
+    moon_mass_kg integer,
+    planet_id integer
 );
 
 
@@ -73,7 +93,11 @@ ALTER TABLE public.moon OWNER TO freecodecamp;
 
 CREATE TABLE public.planet (
     name character varying,
-    planet_id integer NOT NULL
+    planet_id integer NOT NULL,
+    planet_raidus integer,
+    planet_mass_kg integer,
+    has_atmosphere boolean,
+    star_id integer
 );
 
 
@@ -85,34 +109,55 @@ ALTER TABLE public.planet OWNER TO freecodecamp;
 
 CREATE TABLE public.star (
     name character varying,
-    star_id integer NOT NULL
+    star_id integer NOT NULL,
+    star_raidus integer,
+    star_mass_kg integer,
+    galaxy_id integer
 );
 
 
 ALTER TABLE public.star OWNER TO freecodecamp;
 
 --
+-- Data for Name: fifth_table; Type: TABLE DATA; Schema: public; Owner: freecodecamp
+--
+
+
+
+--
 -- Data for Name: galaxy; Type: TABLE DATA; Schema: public; Owner: freecodecamp
 --
 
+INSERT INTO public.galaxy VALUES ('Galaxy Humain', 1, 1000, 2000, NULL, NULL, NULL);
 
 
 --
 -- Data for Name: moon; Type: TABLE DATA; Schema: public; Owner: freecodecamp
 --
 
+INSERT INTO public.moon VALUES ('FirstMoon', 1, 75, 75, NULL);
 
 
 --
 -- Data for Name: planet; Type: TABLE DATA; Schema: public; Owner: freecodecamp
 --
 
+INSERT INTO public.planet VALUES ('Terre', 1, 250, 250, true, NULL);
 
 
 --
 -- Data for Name: star; Type: TABLE DATA; Schema: public; Owner: freecodecamp
 --
 
+INSERT INTO public.star VALUES ('Etoile P', 1, 25, 20, 1);
+
+
+--
+-- Name: fifth_table fifth_table_pkey; Type: CONSTRAINT; Schema: public; Owner: freecodecamp
+--
+
+ALTER TABLE ONLY public.fifth_table
+    ADD CONSTRAINT fifth_table_pkey PRIMARY KEY (table_id);
 
 
 --
@@ -145,6 +190,30 @@ ALTER TABLE ONLY public.planet
 
 ALTER TABLE ONLY public.star
     ADD CONSTRAINT star_pkey PRIMARY KEY (star_id);
+
+
+--
+-- Name: moon moon_planet_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: freecodecamp
+--
+
+ALTER TABLE ONLY public.moon
+    ADD CONSTRAINT moon_planet_id_fkey FOREIGN KEY (planet_id) REFERENCES public.planet(planet_id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: planet planet_star_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: freecodecamp
+--
+
+ALTER TABLE ONLY public.planet
+    ADD CONSTRAINT planet_star_id_fkey FOREIGN KEY (star_id) REFERENCES public.star(star_id);
+
+
+--
+-- Name: star star_galaxy_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: freecodecamp
+--
+
+ALTER TABLE ONLY public.star
+    ADD CONSTRAINT star_galaxy_id_fkey FOREIGN KEY (galaxy_id) REFERENCES public.galaxy(galaxy_id);
 
 
 --
